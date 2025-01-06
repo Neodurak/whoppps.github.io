@@ -4,95 +4,45 @@
   <meta charset="UTF-8" />
   <title>whoppps | rLua Scripts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <!-- Optional: Google Fonts for a modern look -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
 
   <style>
-    /********************************************************
-     * CSS VARIABLES for easy theming
-     ********************************************************/
     :root {
       --font-family: "Inter", sans-serif;
-
-      /* Light mode (inactive by default) */
       --light-bg: #fefefe;
       --light-text: #222;
       --light-nav-bg: #f8f9fa;
-      --light-card-bg: #ffffff;
-
-      /* Dark mode (default) */
       --dark-bg: #1E1E1E;
       --dark-text: #f0f0f0;
       --dark-nav-bg: #2b2b2b;
-      --dark-card-bg: #2f2f2f;
-
-      /* Accent colors */
-      --primary-accent: #6C63FF; /* Bluish purple used in hero & hovers */
+      --primary-accent: #6C63FF;
     }
-
-    /* Default: dark mode */
     body {
-      --bg-color: var(--dark-bg);
-      --text-color: var(--dark-text);
-      --nav-bg: var(--dark-nav-bg);
-      --card-bg: var(--dark-card-bg);
-    }
-
-    body.light-mode {
-      --bg-color: var(--light-bg);
-      --text-color: var(--light-text);
-      --nav-bg: var(--light-nav-bg);
-      --card-bg: var(--light-card-bg);
-    }
-
-    /********************************************************
-     * BASE & RESET
-     ********************************************************/
-    * {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
       font-family: var(--font-family);
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      transition: background-color 0.4s, color 0.4s; 
-      overflow-x: hidden; /* Prevent horizontal scroll if content animates in */
+      background-color: var(--dark-bg);
+      color: var(--dark-text);
+      transition: background-color 0.4s, color 0.4s;
       position: relative;
+      overflow-x: hidden;
     }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-      cursor: pointer;
+    body.light-mode {
+      background-color: var(--light-bg);
+      color: var(--light-text);
     }
-
-    /********************************************************
-     * SNOWFALL CANVAS
-     ********************************************************/
     #snow-canvas {
       position: fixed;
       top: 0;
       left: 0;
       pointer-events: none;
-      z-index: 1; /* behind main content */
+      z-index: 1;
     }
-
-    /********************************************************
-     * NAVIGATION (ABOVE HERO) 
-     *  - modern, sticky, with toggle button
-     ********************************************************/
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--nav-bg);
+      background: var(--dark-nav-bg);
       padding: 10px 20px;
       position: sticky;
       top: 0;
@@ -100,21 +50,23 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: background-color 0.4s;
     }
-
-    /* Left side links */
+    body.light-mode nav {
+      background: var(--light-nav-bg);
+    }
     .nav-left {
       display: flex;
       gap: 1rem;
       align-items: center;
     }
-
     .nav-left a {
-      color: var(--text-color);
+      color: var(--dark-text);
       font-weight: 600;
       position: relative;
       transition: color 0.3s;
     }
-
+    body.light-mode .nav-left a {
+      color: var(--light-text);
+    }
     .nav-left a::after {
       content: "";
       position: absolute;
@@ -125,17 +77,9 @@
       bottom: -3px;
       transition: width 0.3s;
     }
-
     .nav-left a:hover::after {
       width: 100%;
     }
-
-    /* Theme Toggle Button (Sun + Custom Moon) */
-    .nav-right {
-      display: flex;
-      align-items: center;
-    }
-
     #themeToggleBtn {
       background: transparent;
       border: none;
@@ -146,7 +90,6 @@
       outline: none;
       padding: 0;
     }
-
     .icon {
       position: absolute;
       top: 50%;
@@ -154,100 +97,83 @@
       transform: translate(-50%, -50%);
       width: 26px;
       height: 26px;
-      fill: var(--text-color);
+      fill: var(--dark-text);
       transition: opacity 0.3s, fill 0.4s;
       opacity: 0;
     }
-
+    body.light-mode .icon {
+      fill: var(--light-text);
+    }
     .icon.visible {
       opacity: 1;
     }
-
-    /********************************************************
-     * HERO SECTION (blueish gradient, smaller)
-     ********************************************************/
-    .hero {
-      background: linear-gradient(135deg, #6C63FF 0%, #48C6EF 100%);
-      color: #fff;
-      text-align: center;
+    .intro {
       padding: 60px 20px;
+      text-align: center;
+      z-index: 2;
       position: relative;
-      z-index: 2; /* above the snow canvas */
     }
-
-    .hero h1 {
-      font-size: 2.2rem; 
-      margin-bottom: 1rem;
-      opacity: 0; /* Start hidden for fade-in */
+    .intro h1 {
+      font-size: 3rem;
+      color: var(--primary-accent);
+      margin-bottom: 20px;
+      opacity: 0;
       transform: translateY(20px);
       animation: fadeInUp 1s forwards ease-in-out;
     }
-
-    .hero p {
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto 1.5rem auto;
-      line-height: 1.6;
-      opacity: 0; /* Start hidden for fade-in */
+    .intro p {
+      font-size: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.4;
+      opacity: 0;
       transform: translateY(20px);
       animation: fadeInUp 1s 0.3s forwards ease-in-out;
     }
-
-    /********************************************************
-     * MAIN CONTENT & SECTIONS
-     ********************************************************/
     .container {
       max-width: 900px;
       margin: 40px auto;
       padding: 0 20px;
       position: relative;
-      z-index: 2; /* above the snow canvas */
+      z-index: 2;
     }
-
     section {
       margin: 50px 0;
-      opacity: 0;              /* Start hidden for fade-in on scroll */
+      opacity: 0;
       transform: translateY(20px);
       transition: opacity 0.6s ease, transform 0.6s ease;
     }
-
     section.visible {
       opacity: 1;
       transform: translateY(0);
     }
-
     section h2 {
       font-size: 1.8rem;
       margin-bottom: 1rem;
       color: var(--primary-accent);
     }
-
-    section p, section li {
+    section p,
+    section li {
       line-height: 1.6;
       margin-bottom: 10px;
     }
-
     ul {
       list-style-type: square;
       padding-left: 20px;
     }
-
-    /********************************************************
-     * FOOTER
-     ********************************************************/
     footer {
       text-align: center;
       font-size: 0.9rem;
-      background: var(--nav-bg);
-      color: var(--text-color);
+      background: var(--dark-nav-bg);
+      color: var(--dark-text);
       padding: 20px;
       margin-top: 40px;
       transition: background-color 0.4s, color 0.4s;
     }
-
-    /********************************************************
-     * KEYFRAME ANIMATIONS
-     ********************************************************/
+    body.light-mode footer {
+      background: var(--light-nav-bg);
+      color: var(--light-text);
+    }
     @keyframes fadeInUp {
       0% {
         opacity: 0;
@@ -261,81 +187,67 @@
   </style>
 </head>
 <body>
-  <!-- SNOW CANVAS -->
   <canvas id="snow-canvas"></canvas>
-
-  <!-- NAVIGATION BAR (ABOVE HERO) -->
   <nav>
     <div class="nav-left">
       <a href="#about">About</a>
       <a href="#scripts">Scripts</a>
       <a href="#contact">Contact</a>
     </div>
-    <!-- Right side with theme toggle -->
-    <div class="nav-right">
-      <button id="themeToggleBtn" aria-label="Toggle theme">
-        <!-- Sun Icon (SVG) -->
-        <svg viewBox="0 0 512 512" class="icon" id="sunIcon" xmlns="http://www.w3.org/2000/svg">
-          <path d="M256 120c-75.44 0-136 60.56-136 136s60.56 136 136 136 136-60.56 136-136S331.44 120 256 120zm0 
-            240c-57.35 0-104-46.65-104-104s46.65-104 104-104 104 
-            46.65 104 104-46.65 104-104 104zM256 72c13.25 
-            0 24-10.75 24-24V24c0-13.25-10.75-24-24-24s-24 
-            10.75-24 24v24c0 13.25 10.75 24 24 24zm0 368c-13.25 
-            0-24 10.75-24 24v24c0 13.25 10.75 
-            24 24 24s24-10.75 24-24v-24c0-13.25-10.75-24-24-24zm240-184h-24c-13.25 
-            0-24 10.75-24 24s10.75 24 24 
-            24h24c13.25 0 24-10.75 
-            24-24s-10.75-24-24-24zm-408 
-            24c0-13.25-10.75-24-24-24H40c-13.25 0-24 
-            10.75-24 24s10.75 24 24 24h24c13.25 
-            0 24-10.75 24-24zm328.97-130.91l17-17c9.37-9.37 
-            9.37-24.57 0-33.94s-24.57-9.37-33.94 
-            0l-17 17c-9.37 9.37-9.37 24.57 
-            0 33.94 9.37 9.37 24.57 9.37 
-            33.94 0zM123.97 372.12l-17 17c-9.37 9.37-9.37 
-            24.57 0 33.94s24.57 9.37 
-            33.94 0l17-17c9.37-9.37 9.37-24.57 
-            0-33.94-9.37-9.37-24.57-9.37-33.94 0zm273.06 
-            17l17 17c9.37 9.37 24.57 9.37 33.94 
-            0s9.37-24.57 0-33.94l-17-17c-9.37-9.37-24.57-9.37-33.94 
-            0-9.38 9.37-9.38 24.57 0 33.94zm-273.06-273.06c9.37-9.37 
-            9.37-24.57 0-33.94l-17-17c-9.37-9.37-24.57-9.37-33.94 
-            0s-9.37 24.57 0 33.94l17 
-            17c9.37 9.37 24.57 9.37 33.94 0z"/>
-        </svg>
-        <!-- Redrawn Moon Icon (custom simplified SVG) -->
-        <svg
-          id="moonIcon"
-          class="icon"
-          viewBox="0 0 64 64"
-          xmlns="http://www.w3.org/2000/svg">
-          <path d="M44.1,39.8c-9.5,3.2-20-1.6-23.2-11.1c-3.3-9.6,1.6-20.1,11.2-23.3
-            c1.2-0.4,0.9-2.2-0.4-2.3c-8.3-0.8-16.2,2.7-21.5,8.9C3.9,19,2,24.3,2,29.8
-            c0,14.4,11.7,26.1,26.1,26.1c5.5,0,10.8-1.9,15.3-5.5c6.2-5.3,9.7-13.2,8.8-21.5
-            C52.1,28.9,44.5,39.4,44.1,39.8z"/>
-        </svg>
-      </button>
-    </div>
+    <button id="themeToggleBtn" aria-label="Toggle theme">
+      <svg viewBox="0 0 512 512" class="icon" id="sunIcon" xmlns="http://www.w3.org/2000/svg">
+        <path d="M256 120c-75.44 0-136 60.56-136 136s60.56 136 136 136 136-60.56 
+        136-136S331.44 120 256 120zm0 
+        240c-57.35 0-104-46.65-104-104s46.65-104 104-104 
+        104 46.65 104 104-46.65 104-104 
+        104zM256 72c13.25 0 24-10.75 
+        24-24V24c0-13.25-10.75-24-24-24s-24 
+        10.75-24 24v24c0 13.25 10.75 
+        24 24 24zm0 368c-13.25 0-24 
+        10.75-24 24v24c0 13.25 10.75 
+        24 24 24s24-10.75 24-24v-24c0-13.25-10.75-24-24-24zm240-184h-24c-13.25 
+        0-24 10.75-24 24s10.75 24 24 
+        24h24c13.25 0 24-10.75 
+        24-24s-10.75-24-24-24zm-408 
+        24c0-13.25-10.75-24-24-24H40c-13.25 
+        0-24 10.75-24 24s10.75 24 
+        24 24h24c13.25 0 24-10.75 
+        24-24zm328.97-130.91l17-17c9.37-9.37 
+        9.37-24.57 0-33.94s-24.57-9.37-33.94 
+        0l-17 17c-9.37 9.37-9.37 24.57 
+        0 33.94 9.37 9.37 24.57 
+        9.37 33.94 0zM123.97 372.12l-17 
+        17c-9.37 9.37-9.37 24.57 
+        0 33.94s24.57 9.37 
+        33.94 0l17-17c9.37-9.37 
+        9.37-24.57 0-33.94-9.37-9.37-24.57-9.37-33.94 
+        0zm273.06 17l17 17c9.37 
+        9.37 24.57 9.37 33.94 0s9.37-24.57 
+        0-33.94l-17-17c-9.37-9.37-24.57-9.37-33.94 
+        0-9.38 9.37-9.38 24.57 
+        0 33.94zm-273.06-273.06c9.37-9.37 
+        9.37-24.57 0-33.94l-17-17c-9.37-9.37-24.57-9.37-33.94 
+        0s-9.37 24.57 0 33.94l17 
+        17c9.37 9.37 24.57 9.37 33.94 
+        0z"/>
+      </svg>
+      <svg viewBox="0 0 64 64" class="icon" id="moonIcon" xmlns="http://www.w3.org/2000/svg">
+        <path d="M44.1,39.8c-9.5,3.2-20-1.6-23.2-11.1c-3.3-9.6,1.6-20.1,11.2-23.3
+          c1.2-0.4,0.9-2.2-0.4-2.3c-8.3-0.8-16.2,2.7-21.5,8.9C3.9,19,2,24.3,2,29.8
+          c0,14.4,11.7,26.1,26.1,26.1c5.5,0,10.8-1.9,15.3-5.5c6.2-5.3,9.7-13.2,8.8-21.5
+          C52.1,28.9,44.5,39.4,44.1,39.8z"/>
+      </svg>
+    </button>
   </nav>
-
-  <!-- HERO SECTION (below navigation) -->
-  <section class="hero">
+  <div class="intro">
     <h1>Welcome to whoppps' Website</h1>
     <p>Writing rLua scripts and exploring new ways to enhance your gaming experience!</p>
-  </section>
-
-  <!-- MAIN CONTENT -->
+  </div>
   <div class="container">
-    <!-- About Section -->
     <section id="about">
       <h2>About Me</h2>
-      <p>
-        Hello! I am whoppps, a specialist in creating rLua scripts for Roblox, 
-        and my main focus is to work on UI developments, and a little bit more.
-      </p>
+      <p>Hello! I am whoppps, a specialist in creating rLua scripts for Roblox, and my main focus is to work on UI developments, and a little bit more.</p>
     </section>
-
-    <!-- Scripts Section -->
     <section id="scripts">
       <h2>My rLua Scripts</h2>
       <p>Here are some categories I often work on:</p>
@@ -346,8 +258,6 @@
         <li>And much more!</li>
       </ul>
     </section>
-
-    <!-- Contact Section -->
     <section id="contact">
       <h2>Contact Me</h2>
       <p>Find me on Discord:</p>
@@ -356,22 +266,9 @@
       </ul>
     </section>
   </div>
-
-  <!-- FOOTER -->
-  <footer>
-    &copy; <span id="year"></span> whoppps | All rights reserved.
-  </footer>
-
-  <!-- JAVASCRIPT for SCROLL ANIMATION, THEME TOGGLE, and SNOWFALL -->
+  <footer>&copy; <span id="year"></span> whoppps | All rights reserved.</footer>
   <script>
-    /*********************************************
-     * 1) FOOTER YEAR
-     *********************************************/
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    /*********************************************
-     * 2) FADE-IN ON SCROLL (Intersection Observer)
-     *********************************************/
     const sections = document.querySelectorAll('section');
     const observerOptions = { threshold: 0.1 };
     const observer = new IntersectionObserver((entries, obs) => {
@@ -382,90 +279,59 @@
         }
       });
     }, observerOptions);
-
     sections.forEach(section => observer.observe(section));
-
-    /*********************************************
-     * 3) THEME TOGGLE (Dark <-> Light)
-     *    Default is dark. We'll switch to 'light-mode'
-     *    class on body if user clicks the toggle.
-     *********************************************/
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const sunIcon = document.getElementById('sunIcon');
     const moonIcon = document.getElementById('moonIcon');
-
-    // Start in dark mode
     let isDark = true;
-    // Show the moon icon (since we're currently in dark mode)
     moonIcon.classList.add('visible');
-
     themeToggleBtn.addEventListener('click', () => {
       isDark = !isDark;
       document.body.classList.toggle('light-mode', !isDark);
-
-      // Update which icon is visible
       if (isDark) {
-        // Dark mode => show moon, hide sun
         moonIcon.classList.add('visible');
         sunIcon.classList.remove('visible');
       } else {
-        // Light mode => show sun, hide moon
         sunIcon.classList.add('visible');
         moonIcon.classList.remove('visible');
       }
     });
-
-    /*********************************************
-     * 4) SNOWFALL EFFECT
-     *********************************************/
     const canvas = document.getElementById('snow-canvas');
     const ctx = canvas.getContext('2d');
     let snowflakes = [];
-    const numFlakes = 50; // Adjust for more/less snow
-
-    // Resize canvas to fill screen
+    const numFlakes = 50;
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
-
-    // Create random snowflakes
     function initSnowflakes() {
       snowflakes = [];
       for (let i = 0; i < numFlakes; i++) {
         snowflakes.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          radius: Math.random() * 3 + 1,   // size
-          speed: Math.random() * 1 + 0.5,  // vertical speed
-          drift: Math.random() * 1 - 0.5   // horizontal drift
+          radius: Math.random() * 3 + 1,
+          speed: Math.random() * 1 + 0.5,
+          drift: Math.random() * 1 - 0.5
         });
       }
     }
-
-    // Draw a single snowflake
     function drawSnowflake(flake) {
       ctx.beginPath();
       ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
       ctx.fillStyle = "#FFFFFF";
       ctx.fill();
     }
-
-    // Update flake position
     function updateSnowflake(flake) {
       flake.y += flake.speed;
       flake.x += flake.drift;
-
-      // If off the bottom, reset to top
       if (flake.y > canvas.height) {
         flake.y = -flake.radius;
         flake.x = Math.random() * canvas.width;
       }
     }
-
-    // Main animation loop
     function animateSnow() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       snowflakes.forEach(flake => {
@@ -474,9 +340,9 @@
       });
       requestAnimationFrame(animateSnow);
     }
-
     initSnowflakes();
     animateSnow();
   </script>
 </body>
 </html>
+
