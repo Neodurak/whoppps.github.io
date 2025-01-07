@@ -4,19 +4,31 @@
   <meta charset="UTF-8" />
   <title>whoppps | rLua Scripts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
   <style>
     :root {
       --font-family: "Inter", sans-serif;
+      /* Light Mode */
       --light-bg: #fefefe;
       --light-text: #222;
       --light-nav-bg: #f8f9fa;
+
+      /* Dark Mode */
       --dark-bg: #1E1E1E;
       --dark-text: #f0f0f0;
       --dark-nav-bg: #2b2b2b;
+
+      /* Accent */
       --primary-accent: #6C63FF;
+
+      /* Buttons */
+      --btn-radius: 6px;
+      --btn-padding: 10px 18px;
     }
+
     body {
       margin: 0;
       padding: 0;
@@ -31,6 +43,8 @@
       background-color: var(--light-bg);
       color: var(--light-text);
     }
+
+    /* Snow Canvas */
     #snow-canvas {
       position: fixed;
       top: 0;
@@ -38,6 +52,8 @@
       pointer-events: none;
       z-index: 1;
     }
+
+    /* Sticky Nav */
     nav {
       display: flex;
       justify-content: space-between;
@@ -53,6 +69,8 @@
     body.light-mode nav {
       background: var(--light-nav-bg);
     }
+
+    /* Nav Left */
     .nav-left {
       display: flex;
       gap: 1rem;
@@ -63,6 +81,7 @@
       font-weight: 600;
       position: relative;
       transition: color 0.3s;
+      overflow: hidden;
     }
     body.light-mode .nav-left a {
       color: var(--light-text);
@@ -80,6 +99,33 @@
     .nav-left a:hover::after {
       width: 100%;
     }
+
+    /* Nav Right */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Modern Buttons */
+    .btn {
+      position: relative;
+      background: var(--primary-accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--btn-radius);
+      padding: var(--btn-padding);
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #5a54d5;
+    }
+
+    /* Theme Toggle */
     #themeToggleBtn {
       background: transparent;
       border: none;
@@ -89,24 +135,33 @@
       height: 34px;
       outline: none;
       padding: 0;
+      overflow: hidden;
     }
+
+    /* Icons for sun/moon */
     .icon {
+      width: 22px;
+      height: 22px;
+      fill: var(--dark-text);
+      transition: opacity 0.3s, fill 0.4s;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 26px;
-      height: 26px;
-      fill: var(--dark-text);
-      transition: opacity 0.3s, fill 0.4s;
+    }
+
+    /* Ensure both icons are hidden by default, then we'll show the correct one in JS */
+    #sunIcon,
+    #moonIcon {
       opacity: 0;
     }
-    body.light-mode .icon {
+    body.light-mode #sunIcon {
       fill: var(--light-text);
     }
-    .icon.visible {
-      opacity: 1;
+    body.light-mode #moonIcon {
+      fill: var(--light-text);
     }
+
     .intro {
       padding: 60px 20px;
       text-align: center;
@@ -130,6 +185,8 @@
       transform: translateY(20px);
       animation: fadeInUp 1s 0.3s forwards ease-in-out;
     }
+
+    /* Container & Sections */
     .container {
       max-width: 900px;
       margin: 40px auto;
@@ -161,6 +218,8 @@
       list-style-type: square;
       padding-left: 20px;
     }
+
+    /* Footer */
     footer {
       text-align: center;
       font-size: 0.9rem;
@@ -174,6 +233,119 @@
       background: var(--light-nav-bg);
       color: var(--light-text);
     }
+
+    /* Settings Modal */
+    .settings-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.7);
+      background-color: #2f2f2f;
+      color: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      z-index: 999;
+      width: 300px;
+      max-width: 80%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    body.light-mode .settings-modal {
+      background-color: #f0f0f0;
+      color: #000;
+    }
+    .settings-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .settings-modal h3 {
+      margin-bottom: 10px;
+    }
+    .settings-modal label {
+      display: block;
+      margin: 15px 0 5px 0;
+    }
+    .settings-modal input[type="color"] {
+      width: 100%;
+      height: 40px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    .settings-modal .close-btn {
+      margin-top: 20px;
+      padding: 8px 14px;
+      background: var(--primary-accent);
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      border-radius: 4px;
+    }
+    .settings-modal .close-btn:hover {
+      background: #5a54d5;
+    }
+
+    /* "Try my newest script" button */
+    .script-btn {
+      margin-top: 30px;
+      display: inline-block;
+      font-size: 1rem;
+    }
+
+    /* Popup Overlay for Script */
+    .popup-overlay {
+      position: fixed;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .popup-overlay.active {
+      display: flex;
+    }
+    .popup-content {
+      background: #2f2f2f;
+      color: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      max-width: 90%;
+      word-break: break-all;
+    }
+    body.light-mode .popup-content {
+      background: #f0f0f0;
+      color: #000;
+    }
+    .popup-content h4 {
+      margin-bottom: 10px;
+    }
+
+    /* Ripple effect for all clickable */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple 600ms linear;
+      background: rgba(255,255,255,0.4);
+      pointer-events: none;
+      z-index: 1000;
+    }
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* FadeInUp */
     @keyframes fadeInUp {
       0% {
         opacity: 0;
@@ -188,66 +360,78 @@
 </head>
 <body>
   <canvas id="snow-canvas"></canvas>
+
   <nav>
     <div class="nav-left">
-      <a href="#about">About</a>
-      <a href="#scripts">Scripts</a>
-      <a href="#contact">Contact</a>
+      <a href="#about" class="btn-link">About</a>
+      <a href="#scripts" class="btn-link">Scripts</a>
+      <a href="#contact" class="btn-link">Contact</a>
     </div>
-    <button id="themeToggleBtn" aria-label="Toggle theme">
-      <svg viewBox="0 0 512 512" class="icon" id="sunIcon" xmlns="http://www.w3.org/2000/svg">
-        <path d="M256 120c-75.44 0-136 60.56-136 136s60.56 136 136 136 136-60.56 
-        136-136S331.44 120 256 120zm0 
-        240c-57.35 0-104-46.65-104-104s46.65-104 104-104 
-        104 46.65 104 104-46.65 104-104 
-        104zM256 72c13.25 0 24-10.75 
-        24-24V24c0-13.25-10.75-24-24-24s-24 
-        10.75-24 24v24c0 13.25 10.75 
-        24 24 24zm0 368c-13.25 0-24 
-        10.75-24 24v24c0 13.25 10.75 
-        24 24 24s24-10.75 24-24v-24c0-13.25-10.75-24-24-24zm240-184h-24c-13.25 
-        0-24 10.75-24 24s10.75 24 24 
-        24h24c13.25 0 24-10.75 
-        24-24s-10.75-24-24-24zm-408 
-        24c0-13.25-10.75-24-24-24H40c-13.25 
-        0-24 10.75-24 24s10.75 24 
-        24 24h24c13.25 0 24-10.75 
-        24-24zm328.97-130.91l17-17c9.37-9.37 
-        9.37-24.57 0-33.94s-24.57-9.37-33.94 
-        0l-17 17c-9.37 9.37-9.37 24.57 
-        0 33.94 9.37 9.37 24.57 
-        9.37 33.94 0zM123.97 372.12l-17 
-        17c-9.37 9.37-9.37 24.57 
-        0 33.94s24.57 9.37 
-        33.94 0l17-17c9.37-9.37 
-        9.37-24.57 0-33.94-9.37-9.37-24.57-9.37-33.94 
-        0zm273.06 17l17 17c9.37 
-        9.37 24.57 9.37 33.94 0s9.37-24.57 
-        0-33.94l-17-17c-9.37-9.37-24.57-9.37-33.94 
-        0-9.38 9.37-9.38 24.57 
-        0 33.94zm-273.06-273.06c9.37-9.37 
-        9.37-24.57 0-33.94l-17-17c-9.37-9.37-24.57-9.37-33.94 
-        0s-9.37 24.57 0 33.94l17 
-        17c9.37 9.37 24.57 9.37 33.94 
-        0z"/>
-      </svg>
-      <svg viewBox="0 0 64 64" class="icon" id="moonIcon" xmlns="http://www.w3.org/2000/svg">
-        <path d="M44.1,39.8c-9.5,3.2-20-1.6-23.2-11.1c-3.3-9.6,1.6-20.1,11.2-23.3
-          c1.2-0.4,0.9-2.2-0.4-2.3c-8.3-0.8-16.2,2.7-21.5,8.9C3.9,19,2,24.3,2,29.8
-          c0,14.4,11.7,26.1,26.1,26.1c5.5,0,10.8-1.9,15.3-5.5c6.2-5.3,9.7-13.2,8.8-21.5
-          C52.1,28.9,44.5,39.4,44.1,39.8z"/>
-      </svg>
-    </button>
+    <div class="nav-right">
+      <button class="btn" id="settingsBtn">Settings</button>
+      <!-- Theme Toggle Button -->
+      <button id="themeToggleBtn" aria-label="Toggle theme">
+        <!-- Sun Icon -->
+        <svg viewBox="0 0 512 512" class="icon" id="sunIcon" xmlns="http://www.w3.org/2000/svg">
+          <path d="M256 120c-75.44 0-136 60.56-136 
+            136s60.56 136 136 136 136-60.56 
+            136-136S331.44 120 256 120zm0 
+            240c-57.35 0-104-46.65-104-104s46.65-104 
+            104-104 104 46.65 104 104-46.65 
+            104-104 104zM256 72c13.25 0 24-10.75 
+            24-24V24c0-13.25-10.75-24-24-24s-24 
+            10.75-24 24v24c0 13.25 10.75 
+            24 24 24zm0 368c-13.25 
+            0-24 10.75-24 24v24c0 13.25 10.75 
+            24 24 24s24-10.75 24-24v-24c0-13.25-10.75-24-24-24zm240-184h-24c-13.25 
+            0-24 10.75-24 24s10.75 24 24 
+            24h24c13.25 0 24-10.75 
+            24-24s-10.75-24-24-24zm-408 
+            24c0-13.25-10.75-24-24-24H40c-13.25 
+            0-24 10.75-24 24s10.75 
+            24 24 24h24c13.25 
+            0 24-10.75 
+            24-24zm328.97-130.91l17-17c9.37-9.37 
+            9.37-24.57 0-33.94s-24.57-9.37-33.94 
+            0l-17 17c-9.37 9.37-9.37 24.57 
+            0 33.94 9.37 9.37 24.57 
+            9.37 33.94 0zM123.97 372.12l-17 
+            17c-9.37 9.37-9.37 24.57 
+            0 33.94s24.57 9.37 
+            33.94 0l17-17c9.37-9.37 
+            9.37-24.57 0-33.94-9.37-9.37-24.57-9.37-33.94 
+            0zm273.06 17l17 17c9.37 
+            9.37 24.57 9.37 33.94 0s9.37-24.57 
+            0-33.94l-17-17c-9.37-9.37-24.57-9.37-33.94 
+            0-9.38 9.37-9.38 24.57 
+            0 33.94zm-273.06-273.06c9.37-9.37 
+            9.37-24.57 0-33.94l-17-17c-9.37-9.37-24.57-9.37-33.94 
+            0s-9.37 24.57 0 33.94l17 
+            17c9.37 9.37 24.57 9.37 
+            33.94 0z"/>
+        </svg>
+        <!-- Moon Icon -->
+        <svg viewBox="0 0 64 64" class="icon" id="moonIcon" xmlns="http://www.w3.org/2000/svg">
+          <path d="M44.1,39.8c-9.5,3.2-20-1.6-23.2-11.1c-3.3-9.6,1.6-20.1,11.2-23.3
+            c1.2-0.4,0.9-2.2-0.4-2.3c-8.3-0.8-16.2,2.7-21.5,8.9C3.9,19,2,24.3,2,29.8
+            c0,14.4,11.7,26.1,26.1,26.1c5.5,0,10.8-1.9,15.3-5.5c6.2-5.3,9.7-13.2,8.8-21.5
+            C52.1,28.9,44.5,39.4,44.1,39.8z"/>
+        </svg>
+      </button>
+    </div>
   </nav>
+
   <div class="intro">
     <h1>Welcome to whoppps' Website</h1>
     <p>Writing rLua scripts and exploring new ways to enhance your gaming experience!</p>
   </div>
+
   <div class="container">
     <section id="about">
       <h2>About Me</h2>
       <p>Hello! I am whoppps, a specialist in creating rLua scripts for Roblox, and my main focus is to work on UI developments, and a little bit more.</p>
     </section>
+
     <section id="scripts">
       <h2>My rLua Scripts</h2>
       <p>Here are some categories I often work on:</p>
@@ -257,7 +441,9 @@
         <li>Custom animations</li>
         <li>And much more!</li>
       </ul>
+      <button class="btn script-btn" id="newestScriptBtn">Try my newest script</button>
     </section>
+
     <section id="contact">
       <h2>Contact Me</h2>
       <p>Find me on Discord:</p>
@@ -266,9 +452,30 @@
       </ul>
     </section>
   </div>
+
   <footer>&copy; <span id="year"></span> whoppps | All rights reserved.</footer>
+
+  <!-- Settings Modal -->
+  <div class="settings-modal" id="settingsModal">
+    <h3>Settings</h3>
+    <label for="accentPicker">Change Accent Color:</label>
+    <input type="color" id="accentPicker" value="#6C63FF" />
+    <button class="close-btn" id="closeSettings">Close</button>
+  </div>
+
+  <!-- Popup for newest script -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup-content" id="popupContent">
+      <h4>Script:</h4>
+      <p id="popupText"></p>
+    </div>
+  </div>
+
   <script>
+    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Intersection Observer for fade-in
     const sections = document.querySelectorAll('section');
     const observerOptions = { threshold: 0.1 };
     const observer = new IntersectionObserver((entries, obs) => {
@@ -280,22 +487,33 @@
       });
     }, observerOptions);
     sections.forEach(section => observer.observe(section));
+
+    // Theme Toggle
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const sunIcon = document.getElementById('sunIcon');
     const moonIcon = document.getElementById('moonIcon');
+
+    // Start in dark mode
     let isDark = true;
-    moonIcon.classList.add('visible');
+    sunIcon.style.opacity = "0";   // hide sun initially
+    moonIcon.style.opacity = "1";  // show moon for dark
+
     themeToggleBtn.addEventListener('click', () => {
       isDark = !isDark;
       document.body.classList.toggle('light-mode', !isDark);
+
+      // If it's now dark, show moon, hide sun
       if (isDark) {
-        moonIcon.classList.add('visible');
-        sunIcon.classList.remove('visible');
+        moonIcon.style.opacity = "1";
+        sunIcon.style.opacity = "0";
       } else {
-        sunIcon.classList.add('visible');
-        moonIcon.classList.remove('visible');
+        // If it's now light, show sun, hide moon
+        sunIcon.style.opacity = "1";
+        moonIcon.style.opacity = "0";
       }
     });
+
+    // Snow Canvas
     const canvas = document.getElementById('snow-canvas');
     const ctx = canvas.getContext('2d');
     let snowflakes = [];
@@ -306,6 +524,7 @@
     }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
+
     function initSnowflakes() {
       snowflakes = [];
       for (let i = 0; i < numFlakes; i++) {
@@ -342,6 +561,52 @@
     }
     initSnowflakes();
     animateSnow();
+
+    // Settings Modal
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsModal = document.getElementById('settingsModal');
+    const closeSettings = document.getElementById('closeSettings');
+    const accentPicker = document.getElementById('accentPicker');
+    settingsBtn.addEventListener('click', () => {
+      settingsModal.classList.add('active');
+    });
+    closeSettings.addEventListener('click', () => {
+      settingsModal.classList.remove('active');
+    });
+    accentPicker.addEventListener('input', (e) => {
+      document.documentElement.style.setProperty('--primary-accent', e.target.value);
+    });
+
+    // Ripple effect for all clickable
+    function createRipple(e) {
+      const target = e.currentTarget;
+      const circle = document.createElement('span');
+      const diameter = Math.max(target.clientWidth, target.clientHeight);
+      const radius = diameter / 2;
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${e.clientX - (target.getBoundingClientRect().left + radius)}px`;
+      circle.style.top = `${e.clientY - (target.getBoundingClientRect().top + radius)}px`;
+      circle.classList.add('ripple');
+      target.appendChild(circle);
+      setTimeout(() => {
+        circle.remove();
+      }, 600);
+    }
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('click', createRipple);
+    });
+
+    // "Try my newest script" Popup
+    const newestScriptBtn = document.getElementById('newestScriptBtn');
+    const popupOverlay = document.getElementById('popupOverlay');
+    const popupText = document.getElementById('popupText');
+    newestScriptBtn.addEventListener('click', () => {
+      popupText.textContent = `loadstring(game:HttpGet("https://raw.githubusercontent.com/Springs67/LeaksNStuff/3kdIKfmsdSf/LiquidBounce.lua", true))()`;
+      popupOverlay.classList.add('active');
+    });
+    popupOverlay.addEventListener('click', () => {
+      popupOverlay.classList.remove('active');
+    });
   </script>
 </body>
 </html>
