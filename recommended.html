@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Recommended Scripts</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --font-family: "Inter", sans-serif;
+      --light-bg: #fefefe;
+      --light-text: #222;
+      --light-nav-bg: #f8f9fa;
+      --dark-bg: #1E1E1E;
+      --dark-text: #f0f0f0;
+      --dark-nav-bg: #2b2b2b;
+      --primary-accent: #6C63FF;
+      --btn-radius: 6px;
+      --btn-padding: 10px 18px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+      background-color: var(--dark-bg);
+      color: var(--dark-text);
+      transition: background-color 0.4s, color 0.4s;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body.light-mode {
+      background-color: var(--light-bg);
+      color: var(--light-text);
+    }
+
+    /* Snow Canvas */
+    #snow-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Sticky Nav */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--dark-nav-bg);
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 99;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: background-color 0.4s;
+    }
+    body.light-mode nav {
+      background: var(--light-nav-bg);
+    }
+    .nav-left {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .nav-left a {
+      color: var(--dark-text);
+      font-weight: 600;
+      position: relative;
+      transition: color 0.3s;
+      overflow: hidden;
+      text-decoration: none;
+    }
+    body.light-mode .nav-left a {
+      color: var(--light-text);
+    }
+    .nav-left a::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      background: var(--primary-accent);
+      left: 0;
+      bottom: -3px;
+      transition: width 0.3s;
+    }
+    .nav-left a:hover::after {
+      width: 100%;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Modern Buttons */
+    .btn {
+      position: relative;
+      background: var(--primary-accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--btn-radius);
+      padding: var(--btn-padding);
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      overflow: hidden;
+      transition: background 0.3s;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background: #5a54d5;
+    }
+
+    /* Theme Toggle */
+    #themeToggleBtn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      width: 34px;
+      height: 34px;
+      outline: none;
+      padding: 0;
+      overflow: hidden;
+    }
+    .icon {
+      width: 22px;
+      height: 22px;
+      fill: var(--dark-text);
+      transition: opacity 0.3s, fill 0.4s;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+    }
+    body.light-mode .icon {
+      fill: var(--light-text);
+    }
+
+    /* Intro section */
+    .intro {
+      padding: 60px 20px;
+      text-align: center;
+      z-index: 2;
+      position: relative;
+    }
+    .intro h1 {
+      font-size: 2.5rem;
+      color: var(--primary-accent);
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1s forwards ease-in-out;
+    }
+    .intro p {
+      font-size: 1.25rem;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.4;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1s 0.3s forwards ease-in-out;
+    }
+
+    /* Container & Two-Column Row */
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 2;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap; /* so it can wrap on small screens */
+      gap: 30px; /* space between columns */
+    }
+    .column {
+      flex: 1;
+      min-width: 280px; /* for responsiveness on smaller screens */
+    }
+
+    section {
+      margin: 30px 0;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: var(--primary-accent);
+    }
+    section h3 {
+      font-size: 1.3rem;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary-accent);
+    }
+    section p,
+    section li {
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    ul {
+      list-style-type: square;
+      padding-left: 20px;
+    }
+    /* Make anchors clickable, with color transitions */
+    a.link {
+      color: var(--primary-accent);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    a.link:hover {
+      color: #5a54d5;
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      background: var(--dark-nav-bg);
+      color: var(--dark-text);
+      padding: 20px;
+      margin-top: 40px;
+      transition: background-color 0.4s, color 0.4s;
+    }
+    body.light-mode footer {
+      background: var(--light-nav-bg);
+      color: var(--light-text);
+    }
+
+    /* Ripple effect */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple 600ms linear;
+      background: rgba(255,255,255,0.4);
+      pointer-events: none;
+      z-index: 1000;
+    }
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* FadeInUp */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Snow Canvas -->
+  <canvas id="snow-canvas"></canvas>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="btn-link">Home</a>
+    </div>
+    <div class="nav-right">
+      <button id="themeToggleBtn" aria-label="Toggle theme">
+        <!-- Sun Icon -->
+        <svg viewBox="0 0 512 512" class="icon" id="sunIcon" xmlns="http://www.w3.org/2000/svg">
+          <path d="M256 120c-75.44 0-136 60.56-136 
+            136s60.56 136 136 136 136-60.56 
+            136-136S331.44 120 256 120zm0 
+            240c-57.35 0-104-46.65-104-104s46.65-104 
+            104-104 104 46.65 104 104-46.65 
+            104-104 104zM256 72c13.25 0 24-10.75 
+            24-24V24c0-13.25-10.75-24-24-24s-24 
+            10.75-24 24v24c0 13.25 10.75 
+            24 24 24zm0 368c-13.25 
+            0-24 10.75-24 24v24c0 13.25 10.75 
+            24 24 24s24-10.75 24-24v-24c0-13.25-10.75-24-24-24zm240-184h-24c-13.25 
+            0-24 10.75-24 24s10.75 24 24 
+            24h24c13.25 0 24-10.75 
+            24-24s-10.75-24-24-24zm-408 
+            24c0-13.25-10.75-24-24-24H40c-13.25 
+            0-24 10.75-24 24s10.75 
+            24 24 24h24c13.25 
+            0 24-10.75 
+            24-24zm328.97-130.91l17-17c9.37-9.37 
+            9.37-24.57 0-33.94s-24.57-9.37-33.94 
+            0l-17 17c-9.37 9.37-9.37 24.57 
+            0 33.94 9.37 9.37 24.57 
+            9.37 33.94 0zM123.97 372.12l-17 
+            17c-9.37 9.37-9.37 24.57 
+            0 33.94s24.57 9.37 
+            33.94 0l17-17c9.37-9.37 
+            9.37-24.57 0-33.94-9.37-9.37-24.57-9.37-33.94 
+            0zm273.06 17l17 17c9.37 
+            9.37 24.57 9.37 33.94 0s9.37-24.57 
+            0-33.94l-17-17c-9.37-9.37-24.57-9.37-33.94 
+            0-9.38 9.37-9.38 24.57 
+            0 33.94zm-273.06-273.06c9.37-9.37 
+            9.37-24.57 0-33.94l-17-17c-9.37-9.37-24.57-9.37-33.94 
+            0s-9.37 24.57 0 33.94l17 
+            17c9.37 9.37 24.57 9.37 
+            33.94 0z"/>
+        </svg>
+        <!-- Moon Icon -->
+        <svg viewBox="0 0 64 64" class="icon" id="moonIcon" xmlns="http://www.w3.org/2000/svg">
+          <path d="M44.1,39.8c-9.5,3.2-20-1.6-23.2-11.1c-3.3-9.6,1.6-20.1,11.2-23.3
+            c1.2-0.4,0.9-2.2-0.4-2.3c-8.3-0.8-16.2,2.7-21.5,8.9C3.9,19,2,24.3,2,29.8
+            c0,14.4,11.7,26.1,26.1,26.1c5.5,0,10.8-1.9,15.3-5.5c6.2-5.3,9.7-13.2,8.8-21.5
+            C52.1,28.9,44.5,39.4,44.1,39.8z"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Intro -->
+  <div class="intro">
+    <h1>Recommended Scripts</h1>
+    <p>Explore our recommended scripts and resources!</p>
+  </div>
+
+  <div class="container">
+    <!-- Two columns side by side -->
+    <div class="row">
+      <!-- Bedwars Column -->
+      <div class="column">
+        <section id="bedwars">
+          <h2>Bedwars</h2>
+          <p>Below are some Discord links you may find helpful:</p>
+          <ul>
+            <li><a href="https://discord.gg/render" target="_blank" rel="noopener" class="link">discord.gg/render</a></li>
+            <li><a href="https://discord.gg/catvape" target="_blank" rel="noopener" class="link">discord.gg/catvape</a></li>
+            <li><a href="https://discord.gg/voidware" target="_blank" rel="noopener" class="link">discord.gg/voidware</a></li>
+            <li><a href="https://discord.gg/ZqS836yx9k" target="_blank" rel="noopener" class="link">discord.gg/ZqS836yx9k</a></li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- Executer Column -->
+      <div class="column">
+        <section id="executer">
+          <h2>Executer</h2>
+          <p>Below are various executers you can use:</p>
+
+          <h3>Paid</h3>
+          <ul>
+            <li>wave - <a href="https://getwave.gg" target="_blank" rel="noopener" class="link">getwave.gg</a></li>
+            <li>nihon - <a href="https://nihon.lol" target="_blank" rel="noopener" class="link">nihon.lol</a></li>
+            <li>awp - <a href="https://discord.gg/awpgg" target="_blank" rel="noopener" class="link">discord.gg/awpgg</a></li>
+            <li>seliware - <a href="https://discord.com/invite/zovware" target="_blank" rel="noopener" class="link">discord.com/invite/zovware</a></li>
+          </ul>
+
+          <h3>Free</h3>
+          <ul>
+            <li>solara - <a href="https://getsolara.dev" target="_blank" rel="noopener" class="link">getsolara.dev</a></li>
+            <li>swift - <a href="https://getswift.xyz" target="_blank" rel="noopener" class="link">getswift.xyz</a></li>
+            <li>argon - <a href="https://getargon.xyz" target="_blank" rel="noopener" class="link">getargon.xyz</a></li>
+            <li>xeno - <a href="https://discord.gg/getxeno" target="_blank" rel="noopener" class="link">discord.gg/getxeno</a></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <footer>&copy; <span id="year"></span> whoppps | All rights reserved.</footer>
+
+  <script>
+    // Current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Fade-in for sections
+    const sections = document.querySelectorAll('section');
+    const observerOptions = { threshold: 0.1 };
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+    sections.forEach(section => observer.observe(section));
+
+    // Theme Toggle
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+    let isDark = true; 
+    sunIcon.style.opacity = "0";  
+    moonIcon.style.opacity = "1";
+
+    themeToggleBtn.addEventListener('click', () => {
+      isDark = !isDark;
+      document.body.classList.toggle('light-mode', !isDark);
+
+      if (isDark) {
+        moonIcon.style.opacity = "1";
+        sunIcon.style.opacity = "0";
+      } else {
+        sunIcon.style.opacity = "1";
+        moonIcon.style.opacity = "0";
+      }
+    });
+
+    // Snow effect
+    const canvas = document.createElement('canvas');
+    canvas.id = "snow-canvas";
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    let snowflakes = [];
+    const numFlakes = 50;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function initSnowflakes() {
+      snowflakes = [];
+      for (let i = 0; i < numFlakes; i++) {
+        snowflakes.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 3 + 1,
+          speed: Math.random() * 1 + 0.5,
+          drift: Math.random() * 1 - 0.5
+        });
+      }
+    }
+    function drawSnowflake(flake) {
+      ctx.beginPath();
+      ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fill();
+    }
+    function updateSnowflake(flake) {
+      flake.y += flake.speed;
+      flake.x += flake.drift;
+      if (flake.y > canvas.height) {
+        flake.y = -flake.radius;
+        flake.x = Math.random() * canvas.width;
+      }
+    }
+    function animateSnow() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      snowflakes.forEach(flake => {
+        updateSnowflake(flake);
+        drawSnowflake(flake);
+      });
+      requestAnimationFrame(animateSnow);
+    }
+    initSnowflakes();
+    animateSnow();
+
+    // Ripple effect for all clickable
+    function createRipple(e) {
+      const target = e.currentTarget;
+      const circle = document.createElement('span');
+      const diameter = Math.max(target.clientWidth, target.clientHeight);
+      const radius = diameter / 2;
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${e.clientX - (target.getBoundingClientRect().left + radius)}px`;
+      circle.style.top = `${e.clientY - (target.getBoundingClientRect().top + radius)}px`;
+      circle.classList.add('ripple');
+      circle.style.position = 'absolute';
+      circle.style.borderRadius = '50%';
+      circle.style.transform = 'scale(0)';
+      circle.style.animation = 'ripple 600ms linear';
+      circle.style.background = 'rgba(255,255,255,0.4)';
+      circle.style.pointerEvents = 'none';
+      circle.style.zIndex = 1000;
+      target.appendChild(circle);
+      setTimeout(() => {
+        circle.remove();
+      }, 600);
+    }
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('click', createRipple);
+    });
+  </script>
+</body>
+</html>
+
